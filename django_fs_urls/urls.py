@@ -13,6 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from importlib import import_module
+
 from django.urls import path
 
-urlpatterns = []
+
+def get_fs_paths(views_module):
+    paths = []
+
+    module = import_module(views_module)
+    if "default" in dir(module):
+        paths.append(path("", module.default))
+
+    return paths
+
+
+urlpatterns = [
+    *get_fs_paths("django_fs_urls.views"),
+]
