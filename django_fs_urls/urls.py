@@ -13,21 +13,53 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from importlib import import_module
+import importlib
+import pkgutil
+import sys
 
 from django.urls import path
 
 
-def get_fs_paths(views_module):
-    paths = []
+def get_paths_from_module(module, prefix, namespace):
+    result = []
+    name = module.__name__[len(prefix) + 1 :]
 
-    module = import_module(views_module)
-    if "default" in dir(module):
-        paths.append(path("", module.default))
+    if hasattr(module, "dispatch"):
+        route = "/".join(name.split(".")) + "/"
+        url_name = f"{namespace}/{name}"
 
-    return paths
+        if not name:
+            route = ""
+            url_name = namespace
+
+        result += [path(route, module.dispatch, name=url_name)]
+
+    return result
+
+
+def process_pkg(pkg, prefix, namespace):
+    finder, name, _ = pkg
+    finder.invalidate_caches()
+    sys.modules.pop(name, None)
+    module = finder.find_module(name).load_module(name)
+    return get_paths_from_module(module, prefix, namespace)
+
+
+def get_fs_paths(module_name, namespace):
+    result = []
+
+    sys.modules.pop(module_name, None)
+    init_module = importlib.import_module(module_name)
+    root = init_module.__name__
+    module_path = init_module.__path__
+
+    result += get_paths_from_module(init_module, root, namespace)
+    for pkg in pkgutil.walk_packages(module_path, prefix=f"{root}."):
+        result += process_pkg(pkg, root, namespace)
+
+    return result
 
 
 urlpatterns = [
-    *get_fs_paths("django_fs_urls.views"),
+    *get_fs_paths("django_fs_urls.views", "django_fs_urls"),
 ]
