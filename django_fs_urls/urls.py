@@ -44,7 +44,7 @@ def process_pkg(pkg, prefix, namespace):
     return get_path_from_module(module, prefix, namespace)
 
 
-def get_fs_paths(module_name, namespace):
+def fs_paths(module_name, namespace):
     result = []
 
     sys.modules.pop(module_name, None)
@@ -63,5 +63,5 @@ def get_fs_paths(module_name, namespace):
 
 
 urlpatterns = [
-    *get_fs_paths("django_fs_urls.views", "django_fs_urls"),
+    *fs_paths("django_fs_urls.views", "django_fs_urls"),
 ]
