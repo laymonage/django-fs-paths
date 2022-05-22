@@ -20,21 +20,20 @@ import sys
 from django.urls import path
 
 
-def get_paths_from_module(module, prefix, namespace):
-    result = []
+def get_path_from_module(module, prefix, namespace):
     name = module.__name__[len(prefix) + 1 :]
 
-    if hasattr(module, "dispatch"):
-        route = "/".join(name.split(".")) + "/"
-        url_name = f"{namespace}/{name}"
+    if not hasattr(module, "dispatch"):
+        return None
 
-        if not name:
-            route = ""
-            url_name = namespace
+    route = "/".join(name.split(".")) + "/"
+    url_name = f"{namespace}/{name}"
 
-        result += [path(route, module.dispatch, name=url_name)]
+    if not name:
+        route = ""
+        url_name = namespace
 
-    return result
+    return path(route, module.dispatch, name=url_name)
 
 
 def process_pkg(pkg, prefix, namespace):
@@ -42,7 +41,7 @@ def process_pkg(pkg, prefix, namespace):
     finder.invalidate_caches()
     sys.modules.pop(name, None)
     module = finder.find_module(name).load_module(name)
-    return get_paths_from_module(module, prefix, namespace)
+    return get_path_from_module(module, prefix, namespace)
 
 
 def get_fs_paths(module_name, namespace):
@@ -53,9 +52,12 @@ def get_fs_paths(module_name, namespace):
     root = init_module.__name__
     module_path = init_module.__path__
 
-    result += get_paths_from_module(init_module, root, namespace)
+    if path := get_path_from_module(init_module, root, namespace):
+        result.append(path)
+
     for pkg in pkgutil.walk_packages(module_path, prefix=f"{root}."):
-        result += process_pkg(pkg, root, namespace)
+        if path := process_pkg(pkg, root, namespace):
+            result.append(path)
 
     return result
 
