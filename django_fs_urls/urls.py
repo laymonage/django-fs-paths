@@ -20,7 +20,7 @@ import sys
 from django.urls import path
 
 
-module_routes = {}
+_MODULE_ROUTES = {}
 
 
 def get_path_from_module(module, prefix, namespace):
@@ -30,7 +30,7 @@ def get_path_from_module(module, prefix, namespace):
     *_, module_name = name.rsplit(".", maxsplit=1)
     parent_cache_key = cache_key[: -(len(module_name) + 1)]
 
-    parent_route = module_routes.get(parent_cache_key, "")
+    parent_route = _MODULE_ROUTES.get(parent_cache_key, "")
     module_route = getattr(module, "path", module_name)
 
     route = f"{module_route}/"
@@ -42,7 +42,7 @@ def get_path_from_module(module, prefix, namespace):
         route = ""
         url_name = namespace
 
-    module_routes[cache_key] = route
+    _MODULE_ROUTES[cache_key] = route
 
     if not hasattr(module, "dispatch"):
         return None
