@@ -20,6 +20,9 @@ import sys
 from django.urls import path
 
 
+module_paths = {}
+
+
 def get_path_from_module(module, prefix, namespace):
     name = module.__name__[len(prefix) + 1 :]
 
@@ -38,7 +41,9 @@ def get_path_from_module(module, prefix, namespace):
         route = ""
         url_name = namespace
 
-    return path(route, module.dispatch, name=url_name)
+    module_path = path(route, module.dispatch, name=url_name)
+    module_paths[name] = module_path
+    return module_path
 
 
 def process_pkg(pkg, prefix, namespace):
