@@ -27,14 +27,22 @@ def get_path_from_module(module, prefix, namespace):
     cache_key = f"{namespace}/{module.__name__}"
     name = module.__name__[len(prefix) + 1 :]
 
-    resolved_path = name.split(".")
+    *_, module_name = name.rsplit(".", maxsplit=1)
+    parent_cache_key = cache_key[: -len(module_name) - 1]
 
+    parent_route = ""
+    if parent_cache_key in module_routes:
+        parent_route = module_routes[parent_cache_key]
+
+    module_route = module_name
     if hasattr(module, "path"):
-        resolved_path[-1] = module.path
+        module_route = module.path
 
-    route = "/".join(resolved_path) + "/"
+    route = f"{module_route}/"
+    if parent_route:
+        route = f"{parent_route}{module_route}/"
+
     url_name = f"{namespace}/{name}"
-
     if not name:
         route = ""
         url_name = namespace
