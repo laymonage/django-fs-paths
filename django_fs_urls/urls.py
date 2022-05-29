@@ -28,7 +28,7 @@ def get_path_from_module(module, prefix, namespace):
     name = module.__name__[len(prefix) + 1 :]
 
     *_, module_name = name.rsplit(".", maxsplit=1)
-    parent_cache_key = cache_key[: -len(module_name) - 1]
+    parent_cache_key = cache_key[: -(len(module_name) + 1)]
 
     parent_route = module_routes.get(parent_cache_key, "")
     module_route = getattr(module, "path", module_name)
