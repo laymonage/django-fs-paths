@@ -26,9 +26,6 @@ module_routes = {}
 def get_path_from_module(module, prefix, namespace):
     name = module.__name__[len(prefix) + 1 :]
 
-    if not hasattr(module, "dispatch"):
-        return None
-
     resolved_path = name.split(".")
 
     if hasattr(module, "path"):
@@ -42,6 +39,9 @@ def get_path_from_module(module, prefix, namespace):
         url_name = namespace
 
     module_routes[name] = route
+
+    if not hasattr(module, "dispatch"):
+        return None
     return path(route, module.dispatch, name=url_name)
 
 
