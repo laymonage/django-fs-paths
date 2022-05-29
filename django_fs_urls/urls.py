@@ -26,7 +26,12 @@ def get_path_from_module(module, prefix, namespace):
     if not hasattr(module, "dispatch"):
         return None
 
-    route = "/".join(name.split(".")) + "/"
+    resolved_path = name.split(".")
+
+    if hasattr(module, "path"):
+        resolved_path[-1] = module.path
+
+    route = "/".join(resolved_path) + "/"
     url_name = f"{namespace}/{name}"
 
     if not name:
