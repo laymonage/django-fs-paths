@@ -30,13 +30,8 @@ def get_path_from_module(module, prefix, namespace):
     *_, module_name = name.rsplit(".", maxsplit=1)
     parent_cache_key = cache_key[: -len(module_name) - 1]
 
-    parent_route = ""
-    if parent_cache_key in module_routes:
-        parent_route = module_routes[parent_cache_key]
-
-    module_route = module_name
-    if hasattr(module, "path"):
-        module_route = module.path
+    parent_route = module_routes.get(parent_cache_key, "")
+    module_route = getattr(module, "path", module_name)
 
     route = f"{module_route}/"
     if parent_route:
