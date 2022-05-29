@@ -24,6 +24,7 @@ module_routes = {}
 
 
 def get_path_from_module(module, prefix, namespace):
+    cache_key = f"{namespace}/{module.__name__}"
     name = module.__name__[len(prefix) + 1 :]
 
     resolved_path = name.split(".")
@@ -38,7 +39,7 @@ def get_path_from_module(module, prefix, namespace):
         route = ""
         url_name = namespace
 
-    module_routes[module.__name__] = route
+    module_routes[cache_key] = route
 
     if not hasattr(module, "dispatch"):
         return None
