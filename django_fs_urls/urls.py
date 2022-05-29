@@ -37,6 +37,7 @@ def get_path_from_module(module, prefix, namespace):
     if parent_route:
         route = f"{parent_route}{module_route}/"
 
+    name = name.replace(":", "|")
     url_name = f"{namespace}/{name}"
     if not name:
         route = ""
