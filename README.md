@@ -12,15 +12,18 @@ Given the following directory structure:
 ```
 myapp/views/
 ├── __init__.py
-├── profile.py
-└── settings/
+├── account.py
+├── settings/
+│  ├── __init__.py
+│  ├── notifications/
+│  │  ├── __init__.py
+│  │  ├── filters.py
+│  │  └── preferences.py
+│  ├── privacy.py
+│  └── security.py
+└── username/
    ├── __init__.py
-   ├── notifications/
-   │  ├── __init__.py
-   │  ├── filters.py
-   │  └── preferences.py
-   ├── privacy.py
-   └── security.py
+   └── media.py
 ```
 
 And this `urls.py` file:
@@ -38,14 +41,53 @@ following URL paths will be generated:
 
 ```
 /
-/profile/
+/account/
 /settings/
 /settings/notifications/
 /settings/notifications/filters/
 /settings/notifications/preferences/
 /settings/privacy/
 /settings/security/
+/username/
+/username/media/
 ```
+
+If the `.py` file contains a variable named `path`, the route fragment will use
+that instead of the file name. This will be inherited by any descendant paths.
+For example, with the following `myapp/views/username/__init__.py` file:
+
+```py
+path = "<str:username>"
+
+
+def dispatch(request, username, *args, **kwargs):
+    ...
+```
+
+And the following `myapp/views/username/media.py` file:
+
+```py
+def dispatch(request, username, *args, **kwargs):
+    ...
+```
+
+Then, instead of the following URL paths:
+
+```
+/username/
+/username/media/
+```
+
+the following URL paths will be generated:
+
+```
+/<str:username>/
+/<str:username>/media/
+```
+
+You can also directly use path parameters (e.g. `<str:username>`) in your
+file/directory name, but it is not recommended as it is non-standard and you
+lose the ability to import that module normally.
 
 ## Motivation
 
