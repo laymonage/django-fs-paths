@@ -67,18 +67,6 @@ Django project, what it may look like, and how far it can go 🤷
 
 ## Room for improvements
 
-### Path parameters
-
-The real challenge of this project is to add support for path parameters. In JS
-frameworks, this isn't a big deal as file/module names practically have no
-restrictions. For example,
-[Next.js allows dynamic routes using brackets, e.g. `[param].js`][nextjs-dynamic-routes].
-In Python, module names must be valid identifiers, so we're limited to letters,
-numbers, and underscores. Technically, it is possible to use an invalid
-identifier as the module name, since we dynamically import the module at
-runtime. However, this means that you won't be able to normally import the
-module in your code.
-
 ### Request method handlers
 
 Currently, `fs_paths()` only looks for a single `dispatch()` function in the
