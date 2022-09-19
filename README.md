@@ -91,7 +91,7 @@ lose the ability to import that module normally.
 
 ## Motivation
 
-### Marketing version
+### Pitch version
 
 File-system based routing has been rising in popularity, especially in
 JavaScript web frameworks, such as [Next.js][nextjs], [NuxtJS][nuxtjs],
@@ -117,12 +117,26 @@ the request methods that they handle, e.g. `get()`, `post()`, etc. and make a
 default `dispatch()` function, similar to how Django's [View][django-view] class
 works.
 
+### Regex paths
+
+Support for regex paths isn't implemented yet. I imagine this can be made
+possible by looking for an `re_path` variable in the module (and any of its
+parents). If it exists, generate the path with Django's `re_path()` function.
+
 ### Actually turn this into a third-party package
 
-I don't think I have the capacity to turn this into a real package and
-maintain it. If you're interested in doing so, I'll be happy to hand over the
-repository. Feel free to rename it to `django-fs-urls`, `django-file-urls`,
-`django-why-would-you-need-this`, or whatever.
+This was only meant as a proof-of-concept for my DjangoCon Europe talk. There's
+a lot of possibilities for conventions and trade-offs that can be designed to
+handle the edge cases. Thus, I recommend that you just copy and paste
+[the code][code] (it's less than 100 lines) as I don't think I have the capacity
+to turn this into a real package and maintain it. If you're interested in doing
+so, I'll be happy to hand over the repository (or just fork it,
+[license is MIT][license]). Feel free to rename it to `django-fs-urls`,
+`django-file-urls`, `django-why-would-you-need-this`, or whatever.
+
+I also found out there's already [django-file-router][django-file-router], which
+has been published as a proper package (with tests) albeit with a slightly
+different and more opinionated approach, so you might want to use that instead.
 
 [nextjs]: https://nextjs.org/docs/routing/introduction
 [nuxtjs]: https://nuxtjs.org/docs/features/file-system-routing/
@@ -130,3 +144,6 @@ repository. Feel free to rename it to `django-fs-urls`, `django-file-urls`,
 [sveltekit]: https://kit.svelte.dev/docs/routing
 [nextjs-dynamic-routes]: https://nextjs.org/docs/routing/dynamic-routes
 [django-view]: https://github.com/django/django/blob/f825536b5e09b3a047fec0c10aabd91bace0995c/django/views/generic/base.py#L132-L142
+[license]: /LICENSE
+[code]: django_fs_paths/urls.py
+[django-file-router]: https://github.com/jerivas/django-file-router
