@@ -73,6 +73,9 @@ def fs_paths(module_name, namespace, prefix=""):
         if path_obj := process_pkg(pkg, root, namespace):
             result.append(path_obj)
 
+    # Reverse list so that dynamic paths are ordered last
+    result.sort(key=lambda x: str(x.pattern), reverse=True)
+
     return path(prefix, include((result, namespace), namespace=namespace))
 
 
