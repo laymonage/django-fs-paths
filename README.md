@@ -31,7 +31,7 @@ And this `urls.py` file:
 ```py
 urlpatterns = [
   # ...,
-  *fs_paths("myapp.views", namespace="myapp"),
+  fs_paths("myapp.views", namespace="myapp"),
   # ...,
 ]
 ```

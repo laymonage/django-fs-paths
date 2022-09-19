@@ -17,7 +17,7 @@ import importlib
 import pkgutil
 import sys
 
-from django.urls import path
+from django.urls import include, path
 
 
 _MODULE_ROUTES = {}
@@ -38,10 +38,10 @@ def get_path_from_module(module, prefix, namespace):
         route = f"{parent_route}{module_route}/"
 
     name = name.replace(":", "|")
-    url_name = f"{namespace}/{name}"
+    url_name = name
     if not name:
         route = ""
-        url_name = namespace
+        url_name = "index"
 
     _MODULE_ROUTES[cache_key] = route
 
@@ -58,7 +58,7 @@ def process_pkg(pkg, prefix, namespace):
     return get_path_from_module(module, prefix, namespace)
 
 
-def fs_paths(module_name, namespace):
+def fs_paths(module_name, namespace, prefix=""):
     result = []
 
     sys.modules.pop(module_name, None)
@@ -66,16 +66,16 @@ def fs_paths(module_name, namespace):
     root = init_module.__name__
     module_path = init_module.__path__
 
-    if path := get_path_from_module(init_module, root, namespace):
-        result.append(path)
+    if path_obj := get_path_from_module(init_module, root, namespace):
+        result.append(path_obj)
 
     for pkg in pkgutil.walk_packages(module_path, prefix=f"{root}."):
-        if path := process_pkg(pkg, root, namespace):
-            result.append(path)
+        if path_obj := process_pkg(pkg, root, namespace):
+            result.append(path_obj)
 
-    return result
+    return path(prefix, include((result, namespace), namespace=namespace))
 
 
 urlpatterns = [
-    *fs_paths("django_fs_urls.views", "django_fs_urls"),
+    fs_paths("django_fs_urls.views", "demo", "fs/"),
 ]
