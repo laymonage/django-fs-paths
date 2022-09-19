@@ -14,13 +14,33 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import importlib
+import os
 import pkgutil
 import sys
 
+from django.http import JsonResponse
 from django.urls import include, path
 
 
+_DEBUG = os.getenv("DJANGO_FS_URLS_DEBUG") == "True"
 _MODULE_ROUTES = {}
+
+
+def _make_dispatch(route, module, name):
+    def dispatch(request, *args, **kwargs):
+        return JsonResponse(
+            {
+                "route": route,
+                "route_name": name,
+                "module_name": module.__name__,
+                "module_file": os.path.relpath(module.__file__),
+                "args": args,
+                "kwargs": kwargs,
+            },
+            json_dumps_params={"indent": 4},
+        )
+
+    return dispatch
 
 
 def get_path_from_module(module, prefix, namespace):
@@ -38,16 +58,16 @@ def get_path_from_module(module, prefix, namespace):
         route = f"{parent_route}{module_route}/"
 
     name = name.replace(":", "|")
-    url_name = name
     if not name:
         route = ""
-        url_name = "index"
+        name = "index"
 
     _MODULE_ROUTES[cache_key] = route
 
-    if not hasattr(module, "dispatch"):
-        return None
-    return path(route, module.dispatch, name=url_name)
+    default_dispatch = _make_dispatch(route, module, name) if _DEBUG else None
+    dispatch = getattr(module, "dispatch", default_dispatch)
+
+    return path(route, dispatch, name=name)
 
 
 def process_pkg(pkg, prefix, namespace):
