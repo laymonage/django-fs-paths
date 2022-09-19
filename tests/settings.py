@@ -5,11 +5,11 @@ SECRET_KEY = "django-insecure-^%&_xdy77h_o2bc!6c2=5hrsn)dkne=x=c*x=q8x(l%n=+b%53
 DEBUG = True
 
 INSTALLED_APPS = [
-    "django_fs_urls",
+    "django_fs_paths",
     "tests",
 ]
 
-ROOT_URLCONF = "django_fs_urls.urls"
+ROOT_URLCONF = "django_fs_paths.urls"
 
 DATABASES = {
     "default": {

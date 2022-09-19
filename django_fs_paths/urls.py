@@ -1,4 +1,4 @@
-"""django_fs_urls URL Configuration
+"""django_fs_paths URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -22,7 +22,7 @@ from django.http import JsonResponse
 from django.urls import include, path
 
 
-_DEBUG = os.getenv("DJANGO_FS_URLS_DEBUG") == "True"
+_DEBUG = os.getenv("DJANGO_FS_PATHS_DEBUG") == "True"
 _MODULE_ROUTES = {}
 
 
@@ -100,5 +100,5 @@ def fs_paths(module_name, namespace, prefix=""):
 
 
 urlpatterns = [
-    fs_paths("django_fs_urls.views", "demo", "fs/"),
+    fs_paths("django_fs_paths.views", "demo", "fs/"),
 ]

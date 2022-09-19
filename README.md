@@ -1,4 +1,4 @@
-# django-fs-urls
+# django-fs-paths
 
 Automatically generate URL paths based on your file structure.
 
@@ -121,7 +121,7 @@ works.
 
 I don't think I have the capacity to turn this into a real package and
 maintain it. If you're interested in doing so, I'll be happy to hand over the
-repository. Feel free to rename it to `django-fs-paths`, `django-file-urls`,
+repository. Feel free to rename it to `django-fs-urls`, `django-file-urls`,
 `django-why-would-you-need-this`, or whatever.
 
 [nextjs]: https://nextjs.org/docs/routing/introduction
