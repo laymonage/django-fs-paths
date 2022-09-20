@@ -83,20 +83,19 @@ def fs_paths(module_name, namespace, prefix=""):
 
     sys.modules.pop(module_name, None)
     init_module = importlib.import_module(module_name)
-    root = init_module.__name__
     module_path = init_module.__path__
 
-    if path_obj := get_path_from_module(init_module, root, namespace):
+    if path_obj := get_path_from_module(init_module, module_name, namespace):
         result.append(path_obj)
 
-    for pkg in pkgutil.walk_packages(module_path, prefix=f"{root}."):
-        if path_obj := process_pkg(pkg, root, namespace):
+    for pkg in pkgutil.walk_packages(module_path, prefix=f"{module_name}."):
+        if path_obj := process_pkg(pkg, module_name, namespace):
             result.append(path_obj)
 
     # Reverse list so that dynamic paths are ordered last
     result.sort(key=lambda x: str(x.pattern), reverse=True)
 
-    return path(prefix, include((result, namespace), namespace=namespace))
+    return path(prefix, include((result, namespace)))
 
 
 urlpatterns = [
